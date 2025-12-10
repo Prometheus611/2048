@@ -1,4 +1,4 @@
-﻿void random_2_generator(int[] rand_index, string[,] field)
+void random_2_generator(int[] rand_index, string[,] field)
 {
     while (true) {
         rand_index[0] = new Random().Next(0, 4);
@@ -240,5 +240,16 @@ do
     combine(field,last_move);
     controls(field, last_move);
     random_2_generator(new int[2], field);
+    // checks for game over (you can never be sure)
+    for (int i = 0; i < field.GetLength(0); i++)
+    {
+        for (int k = 0; k < field.GetLength(1); k++)
+        {
+            if (field[i, k] == "0")
+            {
+                game = true;
+            }
+        }
+    }
 } while (game == true);
 Console.WriteLine("game over");
