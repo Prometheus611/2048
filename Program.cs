@@ -178,15 +178,19 @@ string keys(string last_move)
     switch (key.Key)
     {
         case ConsoleKey.UpArrow:
+        case ConsoleKey.W:
             last_move = "u";
             break;
         case ConsoleKey.DownArrow:
+        case ConsoleKey.S:
             last_move = "d";
             break;
         case ConsoleKey.LeftArrow:
+        case ConsoleKey.A:
             last_move = "l";
             break;
         case ConsoleKey.RightArrow:
+        case ConsoleKey.D:
             last_move = "r";
             break;
         default:
@@ -245,7 +249,6 @@ do
     }
     // key input
     last_move = keys(last_move);
-    Console.WriteLine(last_move);
     controls(field,last_move);
     combine(field,last_move);
     controls(field, last_move);
