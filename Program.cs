@@ -1,4 +1,6 @@
-﻿void random_2_generator(int[] rand_index, string[,] field)
+using System;
+
+void random_2_generator(int[] rand_index, string[,] field)
 {
     while (true) {
         rand_index[0] = new Random().Next(0, 4);
@@ -94,28 +96,28 @@ void combine(string[,] field, string last_move)
     {
         case "u":
             // combine up
-            for (int i = field.GetLength(0) - 1; i > 0; i--)
-            {
-                for (int k = 0; k < field.GetLength(1); k++)
-                {
-                    if (field[i, k] == field[i - 1, k] && field[i, k] != "0")
-                    {
-                        field[i - 1, k] = (int.Parse(field[i, k]) * 2).ToString();
-                        field[i, k] = "0";
-                    }
-                }
-            }
-            break;
-        case "d":
-            // combine down
             for (int i = 0; i < field.GetLength(0) - 1; i++)
             {
                 for (int k = 0; k < field.GetLength(1); k++)
                 {
                     if (field[i, k] == field[i + 1, k] && field[i, k] != "0")
                     {
-                        field[i + 1, k] = (int.Parse(field[i, k]) * 2).ToString();
-                        field[i, k] = "0";
+                        field[i, k] = (int.Parse(field[i + 1, k]) * 2).ToString();
+                        field[i + 1, k] = "0";
+                    }
+                }
+            }
+            break;
+        case "d":
+            // combine down
+            for (int i = field.GetLength(0) - 1; i > 0; i--)
+            {
+                for (int k = 0; k < field.GetLength(1); k++)
+                {
+                    if (field[i, k] == field[i - 1, k] && field[i, k] != "0")
+                    {
+                        field[i, k] = (int.Parse(field[i - 1, k]) * 2).ToString();
+                        field[i -1, k] = "0";
                     }
                 }
             }
@@ -124,12 +126,12 @@ void combine(string[,] field, string last_move)
             // combine left
             for (int i = 0; i < field.GetLength(0); i++)
             {
-                for (int k = field.GetLength(1) - 1; k > 0; k--)
+                for (int k = 0; k < field.GetLength(1) - 1; k++)
                 {
-                    if (field[i, k] == field[i, k - 1] && field[i, k] != "0")
+                    if (field[i, k] == field[i, k + 1] && field[i, k] != "0")
                     {
-                        field[i, k - 1] = (int.Parse(field[i, k]) * 2).ToString();
-                        field[i, k] = "0";
+                        field[i, k] = (int.Parse(field[i, k + 1]) * 2).ToString();
+                        field[i, k + 1] = "0";
                     }
                 }
             }
@@ -138,12 +140,12 @@ void combine(string[,] field, string last_move)
             // combine right
             for (int i = 0; i < field.GetLength(0); i++)
             {
-                for (int k = 0; k < field.GetLength(1) - 1; k++)
+                for (int k = field.GetLength(1) - 1; k > 0; k--)
                 {
-                    if (field[i, k] == field[i, k + 1] && field[i, k] != "0")
+                    if (field[i, k] == field[i, k - 1] && field[i, k] != "0")
                     {
-                        field[i, k + 1] = (int.Parse(field[i, k]) * 2).ToString();
-                        field[i, k] = "0";
+                        field[i, k] = (int.Parse(field[i, k -1]) * 2).ToString();
+                        field[i, k -1] = "0";
                     }
                 }
             }
@@ -170,45 +172,8 @@ void text_color(string val, ConsoleColor defaultColor)
         default: Console.ForegroundColor = defaultColor; break;
     }
 }
-
-Random rand = new Random();
-bool game = true;
-string[,] field = new string[4, 4];
-string last_move = new string("");
-for (int i = 0; i < field.GetLength(0); i++)
+string keys(string last_move)
 {
-    for (int k = 0; k < field.GetLength(1); k++)
-    {
-         field[i, k] = "0";
-    }
-}
-random_2_generator(new int[2], field);
-
-do
-{
-    game = false;
-    Console.Clear();
-    ConsoleColor defaultColor = Console.ForegroundColor;
-    for (int i = 0; i < field.GetLength(0); i++)
-    {
-        for (int k = 0; k < field.GetLength(1); k++)
-        {
-            string val = field[i, k];
-
-            text_color(val, defaultColor);
-
-            Console.Write(val + "\t");
-
-            Console.ForegroundColor = defaultColor;
-
-            if (val == "0")
-            {
-                game = true;
-            }
-        }
-        Console.WriteLine();
-        Console.WriteLine();
-    }
     ConsoleKeyInfo key = Console.ReadKey();
     switch (key.Key)
     {
@@ -228,8 +193,73 @@ do
             last_move = "";
             break;
     }
+    return (last_move);
+}
+
+Random rand = new Random();
+bool game = true;
+string[,] field = new string[4, 4];
+string last_move = new string("");
+
+
+for (int i = 0; i < field.GetLength(0); i++)
+{
+    for (int k = 0; k < field.GetLength(1); k++)
+    {
+         field[i, k] = "0";
+    }
+}
+random_2_generator(new int[2], field);
+
+do
+{
+    game = false;
+    // checks for game over
+    for (int i = 0; i < field.GetLength(0); i++)
+    {
+        for (int k = 0; k < field.GetLength(1); k++)
+        {
+            if (field[i, k] == "0")
+            {
+                game = true;
+            }
+        }
+    }
+    Console.Clear();
+    ConsoleColor defaultColor = Console.ForegroundColor;
+    // print field
+    for (int i = 0; i < field.GetLength(0); i++)
+    {
+        for (int k = 0; k < field.GetLength(1); k++)
+        {
+            string val = field[i, k];
+
+            text_color(val, defaultColor);
+
+            Console.Write(val + "\t");
+
+            Console.ForegroundColor = defaultColor;
+        }
+        Console.WriteLine();
+        Console.WriteLine();
+    }
+    // key input
+    last_move = keys(last_move);
+    Console.WriteLine(last_move);
     controls(field,last_move);
     combine(field,last_move);
+    controls(field, last_move);
     random_2_generator(new int[2], field);
+    // checks for game over (you can never be sure)
+    for (int i = 0; i < field.GetLength(0); i++)
+    {
+        for (int k = 0; k < field.GetLength(1); k++)
+        {
+            if (field[i, k] == "0")
+            {
+                game = true;
+            }
+        }
+    }
 } while (game == true);
 Console.WriteLine("game over");
